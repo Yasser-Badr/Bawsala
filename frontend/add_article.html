@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="add_article_title">إضافة مقال جديد - بوصلة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <h2 data-i18n="dashboard_title">بوصلة 🧭</h2>
+            <ul>
+                <li><a href="admin.html">🏠 الرئيسية</a></li>
+                <li><a href="manage_articles.html">📝 إدارة المقالات</a></li>
+                <li><a href="add_article.html" class="active">✍️ إضافة مقال</a></li>
+                <li><a href="manage_categories.html" class="superadmin-only">📁 إدارة الأقسام</a></li>
+                <li><a href="add_category.html" class="superadmin-only">➕ إضافة قسم</a></li>
+                <li><a href="manage_users.html" class="superadmin-only">👥 إدارة الصلاحيات</a></li>
+            </ul>
+            <div class="logout-container" style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                <button onclick="logoutAdmin()" class="btn btn-full" style="background-color: #ef4444; margin-top: 0;">🚪 تسجيل الخروج</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="editor-card">
+                <h2 style="color: var(--primary-color); margin-bottom: 25px;">إضافة مقال جديد</h2>
+                
+                <form id="articleForm">
+                    <div class="input-group">
+                        <label>عنوان المقال</label>
+                        <input type="text" id="title" required placeholder="اكتب عنواناً جذاباً...">
+                    </div>
+
+                    <div class="input-group">
+                        <label>الرابط اللطيف (Slug)</label>
+                        <input type="text" id="slug" required placeholder="مثال: how-to-start-coding">
+                    </div>
+
+                    <div class="input-group">
+                        <label>القسم</label>
+                        <select id="categorySelect" required class="custom-select">
+                            <option value="">جاري تحميل الأقسام...</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>محتوى المقال</label>
+                        <textarea id="editor-container" style="height: 500px;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-full" style="margin-top: 20px;">نشر المقال</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
+    <script src="./js/lang.js"></script>
+    <script src="./js/auth.js"></script> 
+    <script src="./js/admin_guard.js"></script>
+    <script src="./js/editor.js"></script> 
+</body>
+</html>

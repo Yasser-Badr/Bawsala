@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="add_category_title">إضافة قسم جديد - بوصلة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <h2 data-i18n="dashboard_title">بوصلة 🧭</h2>
+            <ul>
+                <li><a href="admin.html">🏠 الرئيسية</a></li>
+                <li><a href="manage_articles.html">📝 إدارة المقالات</a></li>
+                <li><a href="add_article.html">✍️ إضافة مقال</a></li>
+                <li><a href="manage_categories.html">📁 إدارة الأقسام</a></li>
+                <li><a href="add_category.html" class="active">➕ إضافة قسم</a></li>
+                <li id="assignLink" style="display: none;"><a href="manage_users.html">👥 إدارة الصلاحيات</a></li>
+            </ul>
+            <div class="logout-container" style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                <button onclick="logoutAdmin()" class="btn btn-full" style="background-color: #ef4444; margin-top: 0;">🚪 تسجيل الخروج</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="editor-card" style="max-width: 600px;"> 
+                <h2 style="color: var(--primary-color); margin-bottom: 25px;">إضافة قسم جديد</h2>
+                
+                <form id="categoryForm">
+                    <div class="input-group">
+                        <label>اسم القسم (مثال: تكنولوجيا، صحة)</label>
+                        <input type="text" id="catName" required placeholder="اكتب اسم القسم...">
+                    </div>
+
+                    <div class="input-group">
+                        <label>الرابط اللطيف (Slug)</label>
+                        <input type="text" id="catSlug" required placeholder="مثال: technology (يجب أن يكون بالإنجليزية وبدون مسافات)">
+                    </div>
+
+                    <div class="input-group">
+                        <label>وصف القسم (اختياري)</label>
+                        <textarea id="catDesc" rows="4" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit;" placeholder="اكتب وصفاً قصيراً لهذا القسم..."></textarea>
+                    </div>
+
+                    <div id="categoryMessage" style="margin-top: 15px; display: none;"></div>
+
+                    <button type="submit" class="btn btn-full" style="margin-top: 20px;">حفظ القسم</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="./js/lang.js"></script>
+    <script src="./js/category.js"></script> 
+    <script src="./js/auth.js"></script>
+    <script src="./js/admin_guard.js"></script>
+</body>
+</html>

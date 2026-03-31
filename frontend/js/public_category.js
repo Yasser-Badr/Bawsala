@@ -1,8 +1,9 @@
 // المسار: frontend/js/public_category.js
 
-const calmColors = ['#f0fdf4', '#eff6ff', '#fdf2f8', '#fffbeb', '#f5f3ff', '#ecfdf5', '#f8fafc'];
-
 document.addEventListener('DOMContentLoaded', async () => {
+    // 👇 استدعاء دالة الناف بار أولاً
+    fetchNavbarCategories();
+
     const urlParams = new URLSearchParams(window.location.search);
     const slug = urlParams.get('slug');
 
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const catDesc = document.getElementById('categoryDescTitle');
 
     if (!slug) {
-        catName.innerText = "القسم غير موجود";
+        if(catName) catName.innerText = "القسم غير موجود";
         return;
     }
 
@@ -20,41 +21,45 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await response.json();
 
         if (!response.ok) {
-            catName.innerText = "القسم غير موجود";
+            if(catName) catName.innerText = "القسم غير موجود";
             return;
         }
 
         const category = data.category;
-        catName.innerHTML = `${category.Name} <i class="bi bi-folder2-open"></i>`;
-        catDesc.innerText = category.Description || "تصفح أحدث المقالات والمواضيع المتميزة في هذا القسم.";
+        if(catName) catName.innerHTML = `${category.Name} <i class="bi bi-folder2-open"></i>`;
+        if(catDesc) catDesc.innerText = category.Description || "تصفح أحدث المقالات والمواضيع المتميزة في هذا القسم.";
         document.title = `${category.Name} - بوصلة`;
 
-        grid.innerHTML = ''; 
+        if(grid) grid.innerHTML = ''; 
 
         if (category.Articles && category.Articles.length > 0) {
+            const calmColors = ['#f8fafc', '#f0fdf4', '#eff6ff', '#fef2f2', '#fffbeb', '#faf5ff', '#e0f2fe', '#fce7f3', '#ecfdf5', '#fefce8'];
+
             category.Articles.forEach(article => {
                 const date = new Date(article.CreatedAt).toLocaleDateString('ar-EG', { month: 'short', day: 'numeric', year: 'numeric' });
                 const coverImg = extractFirstImage(article.Content);
                 const randomColor = calmColors[Math.floor(Math.random() * calmColors.length)];
 
-                let imageElement = '';
+                let imageHTML = '';
                 if (coverImg) {
-                    imageElement = `<img src="${coverImg}" class="card-img-top border-bottom" alt="${article.Title}" style="height: 220px; object-fit: cover;">`;
+                    imageHTML = `<img src="${coverImg}" class="card-img-top" alt="${article.Title}" style="height: 220px; object-fit: cover;">`;
                 } else {
-                    imageElement = `<div class="card-img-top border-bottom d-flex align-items-center justify-content-center" style="height: 220px; background-color: rgba(255,255,255,0.5);">
-                                        <i class="bi bi-journal-text text-secondary" style="font-size: 5rem; opacity: 0.2;"></i>
-                                    </div>`;
+                    imageHTML = `
+                        <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 220px; background-color: ${randomColor}; border-bottom: 1px solid #f1f5f9;">
+                            <i class="bi bi-file-earmark-richtext" style="font-size: 4rem; color: rgba(0,0,0,0.15);"></i>
+                        </div>
+                    `;
                 }
 
                 const cardHTML = `
                     <div class="col">
                         <a href="article.html?slug=${article.Slug}" class="text-decoration-none">
-                            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden article-card-hover" style="background-color: ${randomColor};">
-                                ${imageElement}
+                            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden article-card-hover bg-white">
+                                ${imageHTML}
                                 <div class="card-body p-4 d-flex flex-column">
-                                    <span class="badge bg-white text-primary mb-3 rounded-pill align-self-start fs-6 px-3 py-2 shadow-sm">${category.Name}</span>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary mb-3 rounded-pill align-self-start fs-6 px-3 py-2">${category.Name}</span>
                                     <h4 class="card-title fw-bold mb-3 text-dark" style="line-height: 1.4;">${article.Title}</h4>
-                                    <div class="mt-auto d-flex justify-content-between align-items-center text-muted border-top pt-3 mt-3 border-secondary border-opacity-10">
+                                    <div class="mt-auto d-flex justify-content-between align-items-center text-muted border-top pt-3 mt-3">
                                         <small><i class="bi bi-calendar3"></i> ${date}</small>
                                         <small><i class="bi bi-eye"></i> ${article.Views}</small>
                                     </div>
@@ -63,10 +68,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </a>
                     </div>
                 `;
-                grid.innerHTML += cardHTML;
+                if(grid) grid.innerHTML += cardHTML;
             });
         } else {
-            grid.innerHTML = `<div class="col-12 text-center text-muted py-5"><h4>لا توجد مقالات منشورة في هذا القسم بعد.</h4></div>`;
+            if(grid) grid.innerHTML = `<div class="col-12 text-center text-muted py-5"><h4>لا توجد مقالات منشورة في هذا القسم بعد.</h4></div>`;
         }
 
     } catch (error) { console.error("Error:", error); }
@@ -77,4 +82,21 @@ function extractFirstImage(htmlContent) {
     const doc = new DOMParser().parseFromString(htmlContent, 'text/html');
     const img = doc.querySelector('img');
     return img ? img.src : null;
+}
+
+// 👇 الدالة المضافة لملء الشريط العلوي
+async function fetchNavbarCategories() {
+    try {
+        const response = await fetch('/api/categories');
+        const data = await response.json();
+        const navList = document.getElementById('publicCategories');
+        if (navList) {
+            navList.innerHTML = ''; 
+            if (data.categories) {
+                data.categories.forEach(cat => {
+                    navList.innerHTML += `<li class="nav-item"><a class="nav-link fw-bold" href="category.html?slug=${cat.Slug}">${cat.Name}</a></li>`;
+                });
+            }
+        }
+    } catch (error) { console.error(error); }
 }
